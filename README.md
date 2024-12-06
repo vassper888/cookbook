@@ -1,13 +1,17 @@
-# Page
+# MySQL
 
 
 
 {% tabs %}
-{% tab title="Ubuntu/Debian" %}
+{% tab title="Native" %}
 sudo apt install -y screen
 {% endtab %}
 
-{% tab title="CentOS" %}
+{% tab title="Docker" %}
 sudo
+{% endtab %}
+
+{% tab title="Docker compose" %}
+
 {% endtab %}
 {% endtabs %}
