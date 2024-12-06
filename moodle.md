@@ -56,6 +56,12 @@ ADMINPASS=$(openssl rand -base64 28)
     \ --shortname=MOODLE 4.4
 </code></pre>
 
+Show admin password
+
+```bash
+echo "MOODLE admin password: $ADMINPASS"
+```
+
 Set MOODLE on cron
 
 ```bash
