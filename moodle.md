@@ -55,3 +55,14 @@ ADMINPASS=$(openssl rand -base64 28)
     \ --fullname=LMS MOODLE 4.4
     \ --shortname=MOODLE 4.4
 </code></pre>
+
+Set MOODLE on cron
+
+```bash
+crontab -e
+```
+
+```bash
+* * * * * sudo -u www-data php /var/www/moodle/admin/cli/cron.php >/dev/null
+```
+
