@@ -87,7 +87,9 @@ Show admin password
 echo "MOODLE admin password: $ADMINPASS"
 ```
 
-Set MOODLE on cron
+***
+
+### Set MOODLE on cron
 
 ```bash
 EDITOR=nano crontab -e
@@ -99,7 +101,7 @@ EDITOR=nano crontab -e
 
 ***
 
-### Set GIT on MOODLE
+### Set GIT on MOODLE + UPGRADE + Cleare code
 
 ```bash
 cd /var/www
