@@ -100,6 +100,10 @@ sudo systemctl status nginx
 ## Basic Auth + Nginx
 
 ```bash
+sudo apt-get update -y && sudo apt-get upgrade -y
+```
+
+```bash
 sudo apt install -y apache2-utils
 ```
 
