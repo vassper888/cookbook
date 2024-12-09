@@ -2,7 +2,7 @@
 
 
 
-### Install new MOODLE
+## Install new MOODLE
 
 Go to www dir root
 
@@ -89,7 +89,7 @@ echo "MOODLE admin password: $ADMINPASS"
 
 ***
 
-### Set MOODLE on cron
+## MOODLE on cron
 
 ```bash
 EDITOR=nano crontab -e
@@ -101,7 +101,7 @@ EDITOR=nano crontab -e
 
 ***
 
-### Set GIT on MOODLE + UPGRADE + Cleare code
+## GIT on MOODLE + UPGRADE + Cleare code
 
 ```bash
 cd /var/www
@@ -172,7 +172,7 @@ sudo -u www-data php moodle/admin/cli/maintenance.php --disable
 
 ***
 
-### Upgrade MOODLE
+## Upgrade MOODLE
 
 
 
@@ -180,9 +180,43 @@ sudo -u www-data php moodle/admin/cli/maintenance.php --disable
 
 ***
 
+## Migrade MOODLE DB from MySQL/MariaDB to PostgreSQL
 
 
 
+***
 
+## Run individual cron task
 
+***
+
+## Cache total flush
+
+***
+
+## Install Plugin
+
+***
+
+## Upgrade Plugin
+
+***
+
+## Delete Plugin
+
+***
+
+## Get list plugins
+
+***
+
+## Maintaince mode
+
+***
+
+## MOODLE checks
+
+***
+
+## Travel MOODLE to new server
 
