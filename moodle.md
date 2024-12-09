@@ -4,8 +4,6 @@
 
 ### Install new MOODLE
 
-
-
 Go to www dir root
 
 ```bash
@@ -71,4 +69,91 @@ crontab -e
 ```bash
 * * * * * sudo -u www-data php /var/www/moodle/admin/cli/cron.php >/dev/null
 ```
+
+***
+
+### Set GIT on MOODLE
+
+```bash
+cd /var/www
+```
+
+```bash
+cp -r moodle moodle_bak
+```
+
+```bash
+sudo -u www-data php moodle/admin/cli/maintenance.php --enable
+```
+
+```bash
+cd moodle
+sudo -u www-data php moodle/admin/cli/maintenance.php --enable
+git init
+git remote add origin https://github.com/moodle/moodle.git
+git branch --track MOODLE_404_STABLE origin/MOODLE_404_STABLE
+git checkout MOODLE_404_STABLE
+
+```
+
+```bash
+rm -r moodle
+```
+
+```bash
+git clone https://github.com/moodle/moodle.git
+cd moodle
+git branch --track MOODLE_404_STABLE origin/MOODLE_404_STABLE
+git checkout MOODLE_404_STABLE
+cd ..
+```
+
+```bash
+cp moodle_bak/config.php moodle/config.php
+```
+
+```bash
+rsync -av --progress moodle_bak/ moodle/
+cd moodle
+git status
+
+```
+
+```bash
+sudo chown -R www-data:www-data moodle
+sudo find moodle -type d -exec chmod -R 0755 {} \;
+sudo find moodle -type f -exec chmod -R 0644 {} \;
+```
+
+```bash
+sudo -u www-data php moodle/admin/cli/upgrade.php --non-interactive
+```
+
+```bash
+sudo -u www-data php moodle/admin/cli/maintenance.php --disable
+```
+
+
+
+
+
+
+
+
+
+***
+
+### Upgrade MOODLE
+
+
+
+
+
+***
+
+
+
+
+
+
 
