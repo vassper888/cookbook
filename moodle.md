@@ -55,6 +55,10 @@ ADMINPASS=$(openssl rand -base64 28)
 </code></pre>
 
 ```bash
+sudo -u www-data php admin/cli/cfg.php --name=passwordsaltmain --set=$(openssl rand -base64 40)
+```
+
+```bash
 nano config.php
 ```
 
@@ -86,7 +90,7 @@ echo "MOODLE admin password: $ADMINPASS"
 Set MOODLE on cron
 
 ```bash
-crontab -e
+EDITOR=nano crontab -e
 ```
 
 ```bash
