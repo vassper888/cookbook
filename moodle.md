@@ -4,6 +4,10 @@
 
 ## Install MOODLE
 
+```
+screen -S moodle-install
+```
+
 Go to www dir root
 
 ```bash
@@ -111,6 +115,10 @@ Save config.php: Ctrl+X
 ## GIT on MOODLE + UPGRADE + Cleare code
 
 ```bash
+screen -S moodle-up
+```
+
+```bash
 cd /var/www
 ```
 
@@ -181,6 +189,10 @@ sudo -u www-data php moodle/admin/cli/maintenance.php --disable
 
 ## Upgrade MOODLE
 
+```
+screen -S moodle-up
+```
+
 
 
 
@@ -188,6 +200,10 @@ sudo -u www-data php moodle/admin/cli/maintenance.php --disable
 ***
 
 ## Migrade MOODLE DB from MySQL/MariaDB to PostgreSQL
+
+```
+screen -S moodle-db-migrate
+```
 
 
 
@@ -226,4 +242,12 @@ sudo -u www-data php moodle/admin/cli/maintenance.php --disable
 ***
 
 ## Travel MOODLE to new server
+
+```
+ssh root@<moodle-app-a>
+```
+
+```
+screen -S moodle-travel-a
+```
 
