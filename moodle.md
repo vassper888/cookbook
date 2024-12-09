@@ -33,7 +33,7 @@ cd ..
 </strong>sudo find moodle -type f -exec chmod -R 0644 {} \;
 </code></pre>
 
-```
+```bash
 ADMINPASS=$(openssl rand -base64 28)
 ```
 
