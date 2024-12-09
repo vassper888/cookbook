@@ -34,11 +34,10 @@ sudo systemctl status nginx
 sudo nano /etc/nginx/sites-available/moodle
 ```
 
-```
-server {
-	root /var/www/moodle;
-        index index.php index.html;
-        server_name ed.host.edu;
+<pre><code>server {
+    server_name <a data-footnote-ref href="#user-content-fn-1">ed.host.edu</a>;
+    root /var/www/moodle;
+    index index.php index.html;
 		
 	large_client_header_buffers 5 64k;
 	client_header_buffer_size 64k;
@@ -78,7 +77,7 @@ server {
               add_header X-Frame-Options sameorigin;
         }
 }
-```
+</code></pre>
 
 ```
 nginx -t
@@ -93,3 +92,5 @@ sudo systemctl status nginx
 ```
 
 ***
+
+[^1]: Self domain
