@@ -31,6 +31,10 @@ sudo systemctl status nginx
 ## Set host for MOODLE
 
 ```bash
+sudo mkdir -p /var/www/moodle
+```
+
+```bash
 sudo nano /etc/nginx/sites-available/moodle
 ```
 
@@ -92,5 +96,51 @@ sudo systemctl status nginx
 ```
 
 ***
+
+## Basic Auth + Nginx
+
+```bash
+sudo apt install -y apache2-utils
+```
+
+```bash
+PASSWORD=$(openssl rand -base64 15)
+```
+
+```bash
+sudo htpasswd -c /etc/nginx/conf.d/.htpasswd admin
+```
+
+```bash
+echo "Basic Auth user: admin"
+echo "Basic Auth password: $PASSWORD"
+```
+
+Check:
+
+```bash
+cat /etc/nginx/conf.d/.htpasswd
+```
+
+Set Basic Auth to MOODLE host:
+
+```bash
+sudo nano /etc/nginx/sites-available/moodle
+```
+
+```
+auth_basic "Enter password!";
+auth_basic_user_file /etc/nginx/conf.d/.htpasswd;
+```
+
+Save: Ctrl+X, Enter
+
+```bash
+nginx -t
+```
+
+```bash
+sudo service nginx restart
+```
 
 [^1]: Self domain
