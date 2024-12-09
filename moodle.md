@@ -54,6 +54,29 @@ ADMINPASS=$(openssl rand -base64 28)
     \ --shortname=MOODLE 4.4
 </code></pre>
 
+```bash
+nano config.php
+```
+
+```php
+define('CONTEXT_CACHE_MAX_SIZE', 7500);
+```
+
+Add after line "$CFG->dataroot":
+
+```php
+$CFG->xsendfile = 'X-Accel-Redirect';
+$CFG->xsendfilealiases = array(
+    '/dataroot/' => $CFG->dataroot,
+    '/cachedir/' => '/var/www/moodle/cache',
+    '/localcachedir/' => '/var/local/cache',
+    '/tempdir/'  => '/var/www/moodle/temp',
+    '/filedir'   => '/var/www/moodle/filedir',
+);
+```
+
+Save config.php: Ctrl+X
+
 Show admin password
 
 ```bash
