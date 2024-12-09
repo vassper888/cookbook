@@ -42,44 +42,30 @@ ADMINPASS=$(openssl rand -base64 28)
 </strong>    \ --non-interactive
     \ --lang=ru
     \ --wwwroot=https://ed.host.edu
+    \ --supportemail=admin@host.edu
     \ --adminemail=admin@host.edu
     \ --adminuser=admin
     \ --adminpass=$ADMINPASS
     \ --dataroot=/var/www/moodledata
     \ --dbtype=pgsql
+    \ --dbhost=localhost
+    \ --dbport=5437
+    \ --dbsocket=/var/run/postgresql
     \ --dbname=&#x3C;db name>
     \ --dbuser=&#x3C;db user>
     \ --dbpass=&#x3C;db password>
-    \ --fullname=LMS MOODLE 4.4
-    \ --shortname=MOODLE 4.4
+    \ --fullname=LMS 4.4
+    \ --shortname=LMS
 </code></pre>
 
 ```bash
-sudo -u www-data php admin/cli/cfg.php --name=passwordsaltmain --set=$(openssl rand -base64 40)
-```
-
-```bash
-nano config.php
+sudo -u www-data php admin/cli/cfg.php \
+    --name=passwordsaltmain --set=$(openssl rand -base64 40)
 ```
 
 ```php
 define('CONTEXT_CACHE_MAX_SIZE', 7500);
 ```
-
-Add after line "$CFG->dataroot":
-
-```php
-$CFG->xsendfile = 'X-Accel-Redirect';
-$CFG->xsendfilealiases = array(
-    '/dataroot/' => $CFG->dataroot,
-    '/cachedir/' => '/var/www/moodle/cache',
-    '/localcachedir/' => '/var/local/cache',
-    '/tempdir/'  => '/var/www/moodle/temp',
-    '/filedir'   => '/var/www/moodle/filedir',
-);
-```
-
-Save config.php: Ctrl+X
 
 Show admin password
 
@@ -98,6 +84,27 @@ EDITOR=nano crontab -e
 ```bash
 * * * * * sudo -u www-data php /var/www/moodle/admin/cli/cron.php >/dev/null
 ```
+
+***
+
+## XSendFile
+
+<pre class="language-bash"><code class="lang-bash"><strong>nano config.php
+</strong></code></pre>
+
+Add after line `$CFG->dataroot = ...`:
+
+<pre class="language-php"><code class="lang-php"><strong>$CFG->xsendfile = 'X-Accel-Redirect';
+</strong>$CFG->xsendfilealiases = array(
+    '/dataroot/' => $CFG->dataroot,
+    '/cachedir/' => '/var/www/moodle/cache',
+    '/localcachedir/' => '/var/local/cache',
+    '/tempdir/'  => '/var/www/moodle/temp',
+    '/filedir'   => '/var/www/moodle/filedir',
+);
+</code></pre>
+
+Save config.php: Ctrl+X
 
 ***
 

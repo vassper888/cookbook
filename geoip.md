@@ -1,7 +1,7 @@
 # GeoIP
 
 ```bash
-sudo mkdir -r /var/www/moodledata/geoip
+sudo mkdir -p /var/www/moodledata/geoip
 ```
 
 ```bash
