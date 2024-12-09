@@ -62,9 +62,17 @@ ADMINPASS=$(openssl rand -base64 28)
     \ --shortname=LMS
 </code></pre>
 
+Up security:
+
 ```bash
 sudo -u www-data php admin/cli/cfg.php \
     --name=passwordsaltmain --set=$(openssl rand -base64 40)
+```
+
+Up performance:
+
+```bash
+sudo -u www-data php admin/cli/cfg.php --name=enable_read_only_sessions --set=true
 ```
 
 ```php
