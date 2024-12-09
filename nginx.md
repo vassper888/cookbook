@@ -28,7 +28,7 @@ sudo systemctl status nginx
 
 ***
 
-## Set host for MOODLE
+## Set MOODLE host
 
 ```bash
 sudo mkdir -p /var/www/moodle
@@ -94,6 +94,14 @@ sudo systemctl restart nginx
 ```
 sudo systemctl status nginx
 ```
+
+***
+
+## SSL (HTTPS)
+
+
+
+
 
 ***
 

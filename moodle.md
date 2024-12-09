@@ -2,7 +2,7 @@
 
 
 
-## Install new MOODLE
+## Install MOODLE
 
 Go to www dir root
 
@@ -75,7 +75,7 @@ echo "MOODLE admin password: $ADMINPASS"
 
 ***
 
-## MOODLE on cron
+## MOODLE on Cron
 
 ```bash
 EDITOR=nano crontab -e

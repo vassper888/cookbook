@@ -1,5 +1,7 @@
 # GeoIP
 
+Setup GeoIP for MOODLE
+
 ```bash
 sudo mkdir -p /var/www/moodledata/geoip
 ```
@@ -24,7 +26,7 @@ sudo chmod -R 0777 geoip
 sudo chown -R www-data:www-data geoip
 ```
 
-```
-/admin/settings.php?section=locationsettings geoip2file
-```
+1. Go to `/admin/settings.php?section=locationsettings`
+2. setup config `geoip2file`
+3. Save
 
