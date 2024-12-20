@@ -104,6 +104,8 @@ nano config.php
 
 Add `define('CONTEXT_CACHE_MAX_SIZE', 7500);` after `$CFG = new stdClass();`
 
+Save config.php: Ctrl+X, Enter
+
 Show admin password
 
 ```bash
@@ -124,6 +126,54 @@ EDITOR=nano crontab -e
 ```bash
 * * * * * sudo -u www-data php /var/www/moodle/admin/cli/cron.php >/dev/null
 ```
+
+***
+
+## MOODLE Auto Deply
+
+```bash
+cd /var/www
+```
+
+```bash
+nano moodle-deploy.sh
+```
+
+```bash
+#!/bin/bash
+cd /var/www/moodle
+git pull
+cd ..
+chown www-data:www-data moodle
+sudo -u www-data php moodle/admin/cli/upgrade.php --non-interactive
+sudo -u www-data php moodle/admin/cli/purge_caches.php
+```
+
+Save moodle-deploy.sh: Ctrl+X, Enter
+
+```bash
+chmod +x moodle-deploy.sh
+```
+
+```bash
+gedit ~/.bashrc
+```
+
+```bash
+alias moodle-deploy='/var/www/moodle-deploy.sh'
+```
+
+Save .bashrc
+
+```bash
+EDITOR=nano crontab -e
+```
+
+```bash
+1 1 * * 0 moodle-deploy >/var/log/moodle-deploy.log
+```
+
+Save: Ctrl+X, Enter
 
 ***
 
