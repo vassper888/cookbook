@@ -8,6 +8,12 @@
 screen -S moodle-install
 ```
 
+Check free disk space (for new dev moodle need 1-3GB or prod moodle need >=10GB)
+
+```bash
+df -BG /
+```
+
 Go to www dir root
 
 ```bash
@@ -38,28 +44,45 @@ cd ..
 </code></pre>
 
 ```bash
+ADMINUSER=admin.lms
 ADMINPASS=$(openssl rand -base64 28)
+ADMINEMAIL=admin@host.edu
+SUPPORTEMAIL=admin@host.edu
+
+LMSLANG=ru
+WWWROOT=https://ed.host.edu
+DATAROOT=/var/www/moodledata
+FULLNAME='LMS MOODLE 4.4'
+SHORTNAME='LMS'
+
+DBTYPE=pgsql
+DBHOST=localhost
+DBPORT=5437
+DBSOCKET=/var/run/postgresql
+DBNAME=moodle
+DBUSER=moodle
+DBPASS=P123uA19zx1DF
 ```
 
 <pre class="language-bash"><code class="lang-bash"><strong>cd moodle
 </strong><strong>sudo -u www-data php admin/cli/install.php --agree-license \ 
 </strong>    \ --non-interactive
-    \ --lang=ru
-    \ --wwwroot=https://ed.host.edu
-    \ --supportemail=admin@host.edu
-    \ --adminemail=admin@host.edu
-    \ --adminuser=admin
+    \ --fullname=$FULLNAME
+    \ --shortname=$SHORTNAME
+    \ --lang=$LMSLANG
+    \ --wwwroot=$WWWROOT
+    \ --supportemail=$SUPPORTEMAIL
+    \ --adminemail=$ADMINEMAIL
+    \ --adminuser=$ADMINUSER
     \ --adminpass=$ADMINPASS
-    \ --dataroot=/var/www/moodledata
-    \ --dbtype=pgsql
-    \ --dbhost=localhost
-    \ --dbport=5437
-    \ --dbsocket=/var/run/postgresql
-    \ --dbname=&#x3C;db name>
-    \ --dbuser=&#x3C;db user>
-    \ --dbpass=&#x3C;db password>
-    \ --fullname=LMS 4.4
-    \ --shortname=LMS
+    \ --dataroot=$DATAROOT
+    \ --dbtype=$DBTYPE
+    \ --dbhost=$DBHOST
+    \ --dbport=$DBPORT
+    \ --dbsocket=$DBSOCKET
+    \ --dbname=$DBNAME
+    \ --dbuser=$DBUSER
+    \ --dbpass=$DBPASS
 </code></pre>
 
 Up security:
@@ -75,14 +98,19 @@ Up performance:
 sudo -u www-data php admin/cli/cfg.php --name=enable_read_only_sessions --set=true
 ```
 
-```php
-define('CONTEXT_CACHE_MAX_SIZE', 7500);
 ```
+nano config.php
+```
+
+Add `define('CONTEXT_CACHE_MAX_SIZE', 7500);` after `$CFG = new stdClass();`
 
 Show admin password
 
 ```bash
-echo "MOODLE admin password: $ADMINPASS"
+echo "MOODLE Install Complite"
+echo "Admin username: $ADMINUSER"
+echo "Admin password: $ADMINPASS"
+echo "Admin email: $ADMINEMAIL"
 ```
 
 ***
