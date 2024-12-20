@@ -122,7 +122,7 @@ echo "Admin email: $ADMINEMAIL"
 
 ***
 
-## MOODLE on Cron
+## Cron
 
 ```bash
 EDITOR=nano crontab -e
@@ -134,7 +134,7 @@ EDITOR=nano crontab -e
 
 ***
 
-## MOODLE Auto Deply
+## Auto Deply
 
 ```bash
 cd /var/www
@@ -214,6 +214,9 @@ nano moodledata-backup.sh
 
 ```bash
 #!/bin/bash
+
+# check free space
+
 rsync -avc /var/www/moodle/moodledata /mnt/moodle/backups/moodledata
 ```
 
@@ -265,20 +268,22 @@ lnav /var/log/moodledata-backup.log
 
 ***
 
-## MOODLE DB Backup
+## Backup DB
 
-```
+```bash
 cd /var/www
 ```
 
-```
+```bash
 nano moodle-db-backup.sh
 ```
 
 We make backups every day and store copies for the last 30 days.
 
-```
+```bash
 #!/bin/bash
+
+# check free space
 
 BAKDIR=/mnt/moodle/backups/db
 DAYS=30
@@ -306,15 +311,15 @@ unset DBPASS
 
 Save moodle-db-backup.sh: Ctrl+X, Enter
 
-```
+```bash
 chmod +x moodle-db-backup.sh
 ```
 
-```
+```bash
 gedit ~/.bashrc
 ```
 
-```
+```bash
 alias moodle-db-backup='/var/www/moodle-db-backup.sh'
 ```
 
@@ -352,17 +357,11 @@ lnav /var/log/moodle-db-backup.log
 
 Show backup list:
 
-```
+```bash
 cd /mnt/moodle/backups/db && ls -l
 ```
 
 ***
-
-
-
-
-
-
 
 ## XSendFile
 
@@ -381,11 +380,11 @@ Add after line `$CFG->dataroot = ...`:
 );
 </code></pre>
 
-Save config.php: Ctrl+X
+Save config.php: Ctrl+X, Enter
 
 ***
 
-## GIT on MOODLE + UPGRADE + Cleare code
+## GIT + MOODLE + UPGRADE + Cleare code
 
 ```bash
 screen -S moodle-up
@@ -450,14 +449,6 @@ sudo -u www-data php moodle/admin/cli/upgrade.php --non-interactive
 sudo -u www-data php moodle/admin/cli/maintenance.php --disable
 ```
 
-
-
-
-
-
-
-
-
 ***
 
 ## Upgrade MOODLE
@@ -472,7 +463,7 @@ screen -S moodle-up
 
 ***
 
-## Migrade MOODLE DB from MySQL/MariaDB to PostgreSQL
+## Migrade MOODLE DB: MySQL/MariaDB -> PostgreSQL
 
 ```
 screen -S moodle-db-migrate
@@ -510,17 +501,134 @@ screen -S moodle-db-migrate
 
 ***
 
-## MOODLE checks
+## Checks
 
 ***
 
 ## Travel MOODLE to new server
 
-```
-ssh root@<moodle-app-a>
-```
+Step 1:
 
 ```
-screen -S moodle-travel-a
+ssh root@<old-moodle-app>
+
+screen -S moodle-travel
+
+# check db size
+
+# check free disk space for db dump
+
+cd /var/www
+
+sudo -u www-data php moodle/admin/cli/maintenance.php --enable
+
+sudo -u www-data php moodle/admin/cli/kill_all_sessions.php
+
+sudo -u www-data php moodle/admin/cli/purge_caches.php
+
+EDITOR=nano crontab -e
+# comment moodle cron and all backups cron
+
+# make db dump
+
+# check size moodledata
+
+# check size moodle
+
+# check size backups
+
+# check size db dump
+
 ```
 
+Step 2:
+
+```
+ssh root@<new-moodle-app>
+
+screen -S moodle-travel
+
+# check nginx and /var/www/moodle
+
+# check free disk space
+
+# check db type
+
+# check db connect
+
+# check php
+
+# check /mnt backup dirs
+
+# check /mnt free space
+
+screen -S moodle-travel-moodledata
+rsync <old-moodle-app>/moodledata/* /var/www/moodledata
+sudo chown -R www-data:www-data /var/www/moodledata
+sudo chmod -R 0777 /var/www/moodledata
+
+screen -S moodle-travel-backups
+rsync <old-moodle-app>/mnt/moodle/backups/* /mnt/moodle/backups
+sudo chmod -R 0777 /mnt/moodle/backups
+
+screen -S moodle-travel-moodle
+rsync <old-moodle-app>/var/www/moodle/* /var/www/moodle
+sudo chown -R www-data:www-data /var/www/moodle
+sudo find /var/www/moodle-type d -exec chmod -R 0755 {} \;
+sudo find /var/www/moodle-type f -exec chmod -R 0644 {} \;
+
+screen -S moodle-travel-db
+rsync <old-moodle-app>/var/www/moodle.sql.gz /var/www/moodle.sql.gz
+gunzip < moodle.sql.gz | mysql -u moodle -p moodle
+mysql -u moodle -p moodle
+SHOW TABLES;
+EXIT;
+sudo rm moodle.sql.gz
+```
+
+Step 3: After upload 'moodledata', 'moodle' and 'db dump'
+
+Set new IP app moodle server in A-records in DNS
+
+And off maintenance mode:
+
+```
+ssh root@<new-moodle-app>
+
+EDITOR=nano crontab -e
+* * * * * sudo -u www-data php /var/www/moodle/admin/cli/cron.php >/dev/null
+
+cd /var/www/moodle
+
+sudo -u www-data php moodle/admin/cli/maintenance.php --disable
+```
+
+After update DNS A-records and maintenance mode check work moodle
+
+
+
+After check work moodle set up backups on cron:
+
+```
+// Some code
+```
+
+Step 4: Optional (Removing data from the old server)
+
+ATTENTION!!! Only after the complete transfer of data to the new server and making sure that the data on the new server is intact, everything works!
+
+```
+ssh root@<old-moodle-app>
+
+screen -S moodle-remove
+
+# remove moodle web-server host
+
+# remove records in cron for moodle
+
+sudo rm -r /var/www/moodle
+sudo rm /var/www/moodle.sql.gz
+sudo rm -r /var/www/moodledata
+sudo rm -r /mnt/moodle/backups
+sudo rm -r /var/log/moodle*.log
+```
