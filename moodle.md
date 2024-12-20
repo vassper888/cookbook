@@ -165,6 +165,14 @@ alias moodle-deploy='/var/www/moodle-deploy.sh'
 
 Save .bashrc
 
+Hand run moodle-deploy:
+
+```bash
+moodle-deploy
+```
+
+Set moodle-deploy to run automatically every Sunday at 1 am:
+
 ```bash
 EDITOR=nano crontab -e
 ```
@@ -175,7 +183,84 @@ EDITOR=nano crontab -e
 
 Save: Ctrl+X, Enter
 
+See moodle-deploy log:
+
+```bash
+less /var/log/moodle-deploy.log
+```
+
+or
+
+```bash
+lnav /var/log/moodle-deploy.log
+```
+
 ***
+
+## Backup 'moodledata'
+
+```bash
+cd /var/www
+```
+
+```bash
+nano moodledata-backup.sh
+```
+
+```bash
+#!/bin/bash
+rsync -avc /var/www/moodle/moodledata /mnt/moodle/backups/moodledata
+```
+
+Save moodledata-backup.sh: Ctrl+X, Enter
+
+```bash
+chmod +x moodledata-backup.sh
+```
+
+```bash
+gedit ~/.bashrc
+```
+
+```bash
+alias moodledata-backup='/var/www/moodledata-backup.sh'
+```
+
+Save .bashrc
+
+Hand run moodledata-backup:
+
+```bash
+moodledata-backup
+```
+
+Setting up moodledata-backup to run automatically every day at 1am:
+
+```bash
+EDITOR=nano crontab -e
+```
+
+```bash
+1 1 * * * moodledata-backup >/var/log/moodledata-backup.log
+```
+
+Save: Ctrl+X, Enter
+
+See moodledata-backup log:
+
+```bash
+less /var/log/moodledata-backup.log
+```
+
+or
+
+```bash
+lnav /var/log/moodledata-backup.log
+```
+
+***
+
+
 
 ## XSendFile
 
