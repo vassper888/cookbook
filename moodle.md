@@ -85,7 +85,7 @@ DBPASS=P123uA19zx1DF
     \ --dbpass=$DBPASS
 </code></pre>
 
-Up security:
+Up security (ONLY FOR NEW MOODLE):
 
 ```bash
 sudo -u www-data php admin/cli/cfg.php \
@@ -94,8 +94,13 @@ sudo -u www-data php admin/cli/cfg.php \
 
 Up performance:
 
+ATTENTION!!! After installing enable\_read\_only\_sessions, you need to reset all authorization sessions.
+
+<pre class="language-bash"><code class="lang-bash"><strong>sudo -u www-data php admin/cli/cfg.php --name=enable_read_only_sessions --set=true
+</strong></code></pre>
+
 ```bash
-sudo -u www-data php admin/cli/cfg.php --name=enable_read_only_sessions --set=true
+sudo -u www-data php admin/cli/kill_all_sessions.php
 ```
 
 ```
@@ -259,6 +264,103 @@ lnav /var/log/moodledata-backup.log
 ```
 
 ***
+
+## MOODLE DB Backup
+
+```
+cd /var/www
+```
+
+```
+nano moodle-db-backup.sh
+```
+
+We make backups every day and store copies for the last 30 days.
+
+```
+#!/bin/bash
+
+BAKDIR=/mnt/moodle/backups/db
+DAYS=30
+CLIPATH='php /var/www/moodle/admin/cli/cfg.php'
+DBTYPE=$($CLIPATH --name=dbtype --shell-arg --no-eol)
+DBHOST=$($CLIPATH --name=dbhost --shell-arg --no-eol)
+DBPORT=$($CLIPATH --name=dboptions['dbport'] --shell-arg --no-eol)
+DBNAME=$($CLIPATH --name=dbname --shell-arg --no-eol)
+DBUSER=$($CLIPATH --name=dbuser --shell-arg --no-eol)
+DBPASS=$($CLIPATH --name=dbpass --shell-arg --no-eol)
+export DBPASS
+
+find $BAKDIR -name "*.sql.gz" -type f -mtime +$DAYS -delete
+
+if [[ $DBTYPE -eq "pgsql" ]]; then
+   pg_dump --host=$DBHOST --port=$DBPORT -U $DBUSER $DBNAME | gzip > $BAKDIR/pgsql_$(date "+%Y-%m-%d").sql.gz
+elif [[ $DBTYPE -eq "mariadb" || $DBTYPE -eq "mysqli" ]]; then
+   mysqldump --host=$DBHOST --port=$DBPORT -u $DBUSER -$DBPASS $DBNAME | gzip > $BAKDIR/mysql_$(date "+%Y-%m-%d").sql.gz
+else
+   echo "Unsupported database type: $DBTYPE"
+fi
+
+unset DBPASS
+```
+
+Save moodle-db-backup.sh: Ctrl+X, Enter
+
+```
+chmod +x moodle-db-backup.sh
+```
+
+```
+gedit ~/.bashrc
+```
+
+```
+alias moodle-db-backup='/var/www/moodle-db-backup.sh'
+```
+
+Save .bashrc
+
+Hand run moodle-db-backup:
+
+```bash
+moodle-db-backup
+```
+
+Setting up moodle-db-backup to run automatically every day at 1am:
+
+```bash
+EDITOR=nano crontab -e
+```
+
+```bash
+1 1 * * * moodle-db-backup >/var/log/moodle-db-backup.log
+```
+
+Save: Ctrl+X, Enter
+
+See moodle-db-backup log:
+
+```bash
+less /var/log/moodle-db-backup.log
+```
+
+or
+
+```bash
+lnav /var/log/moodle-db-backup.log
+```
+
+Show backup list:
+
+```
+cd /mnt/moodle/backups/db && ls -l
+```
+
+***
+
+
+
+
 
 
 
