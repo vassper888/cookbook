@@ -147,11 +147,28 @@ nano moodle-deploy.sh
 ```bash
 #!/bin/bash
 cd /var/www/moodle
+CHECKSTATUS=$(sudo -u www-data php admin/cli/checks.php --filter=environment,upgradecheck | head -c 2)
+if [[ $CHECKSTATUS -noteq "OK" ]]; then
+    echo "Bad check status."
+    exit;
+fi
+sudo -u www-data php admin/cli/maintenance.php --enable
+sudo -u www-data php admin/cli/cron.php --disable
 git pull
+git submodule foreach git fetch --all && git reset --hard && git pull && grunt amd
+DATAROOT=$(php admin/cli/cfg.php --name=dataroot)
+sudo chown -R www-data $DATAROOT
+sudo chmod -R 0777 $DATAROOT
 cd ..
 chown www-data:www-data moodle
-sudo -u www-data php moodle/admin/cli/upgrade.php --non-interactive
-sudo -u www-data php moodle/admin/cli/purge_caches.php
+sudo find moodle -type d -exec chmod -R 0755 {} \;
+sudo find moodle -type f -exec chmod -R 0644 {} \;
+sudo -u www-data php admin/cli/uninstall_plugins.php --purge-missing --run
+sudo -u www-data php admin/cli/upgrade.php --non-interactive
+sudo -u www-data php admin/cli/purge_caches.php
+sudo -u www-data php admin/cli/cron.php --enable
+sudo -u www-data php admin/cli/maintenance.php --disable
+sudo -u www-data php admin/cli/checks.php --filter=environment,upgradecheck
 ```
 
 Save moodle-deploy.sh: Ctrl+X, Enter

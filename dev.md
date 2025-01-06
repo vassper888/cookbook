@@ -31,7 +31,100 @@ If not errors, build `/amd/build/`[`script`](#user-content-fn-2)[^2]`.min.js` an
 
 ***
 
+## Make new plugin
 
+```bash
+cd ~
+
+nano moodle-plugin-init.sh
+```
+
+```bash
+#!/bin/bash
+
+getopt -l "name:,version::,verbose" -- "n:v::V" --name=Karthik -version=5.2 -verbose
+
+OPTSTRING=":type:name:"
+
+while getopts ${OPTSTRING} opt; do
+  case ${opt} in
+    x)
+      echo "Option --name was triggered, Argument: ${OPTARG}"
+      ;;
+    y)
+      echo "Option --type was triggered, Argument: ${OPTARG}"
+      ;;
+    :)
+      echo "Option -${OPTARG} requires an argument."
+      exit 1
+      ;;
+    ?)
+      echo "Invalid option: -${OPTARG}."
+      exit 1
+      ;;
+  esac
+done
+```
+
+```bash
+chmod +x moodle-plugin-init.sh
+```
+
+```bash
+nano ~/.bashrc
+```
+
+```bash
+alias moodle-plugin-init='~/moodle-plugin-init.sh'
+```
+
+Run in console for test and print help:
+
+```
+moodle-plugin-init
+```
+
+Get version moodle-plugin-init:
+
+```
+moodle-plugin-init --version
+```
+
+Init new moodle plugin (Full mode):
+
+```bash
+moodle-plugin-init --mod=full --type=local --name=vc --lang=en,ru
+```
+
+Init new moodle plugin (Master mode):
+
+```bash
+moodle-plugin-init --type=local
+    \ --name=vc
+    \ --lang=en,ru
+    \ --pluginame-en=''
+    \ --pluginame-ru=''
+    \ --db=true
+    \ --css=true
+    \ --js-amd=true
+    \ --pix=true
+    \ --templates=true
+    \ --git-init=true
+    \ --git-branch=master
+    \ --git-remote=
+    \ --readme=true
+    \ --unit-test=true
+    \ --access=true
+    \ --event=true
+    \ --hooks=true
+    \ --messages=true
+    \ --services=true
+    \ --tasks=true
+    \ --cache=true
+    \ --uninstall=true
+    \ --install=true
+    \ --privacy=true
+```
 
 [^1]: Your plugin dir
 
