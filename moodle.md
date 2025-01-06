@@ -157,12 +157,12 @@ sudo -u www-data php admin/cli/cron.php --disable
 git pull
 git submodule foreach git fetch --all && git reset --hard && git pull && grunt amd
 DATAROOT=$(php admin/cli/cfg.php --name=dataroot)
-sudo chown -R www-data $DATAROOT
-sudo chmod -R 0777 $DATAROOT
+chown -R www-data $DATAROOT
+chmod -R 0777 $DATAROOT
 cd ..
 chown www-data:www-data moodle
-sudo find moodle -type d -exec chmod -R 0755 {} \;
-sudo find moodle -type f -exec chmod -R 0644 {} \;
+find moodle -type d -exec chmod -R 0755 {} \;
+find moodle -type f -exec chmod -R 0644 {} \;
 sudo -u www-data php admin/cli/uninstall_plugins.php --purge-missing --run
 sudo -u www-data php admin/cli/upgrade.php --non-interactive
 sudo -u www-data php admin/cli/purge_caches.php
@@ -187,7 +187,7 @@ alias moodle-deploy='/var/www/moodle-deploy.sh'
 
 Save .bashrc
 
-Hand run moodle-deploy:
+Manual run moodle-deploy in CLI:
 
 ```bash
 moodle-deploy
@@ -232,9 +232,20 @@ nano moodledata-backup.sh
 ```bash
 #!/bin/bash
 
-# check free space
+SOURCE="/var/www/moodle/moodledata"
+DISK="/mnt/moodle/backups/moodledata"
 
-rsync -avc /var/www/moodle/moodledata /mnt/moodle/backups/moodledata
+SOURCE_GB=$(du -sBG | sed 's/\.//g' | sed 's/G//g')
+DISK_GB=$(df --output=avail -BG $DISK | tail -1 | sed 's/G//g' | sed 's/ //g')
+
+if [ "$SOURCE_GB" -gt "$DISK_GB" ]; then
+    echo "Low free disk space for backups (DISK: $DISK)."
+    echo "Disk free space: $DISK_GB GB | $DISK"
+    echo "Backup data: $SOURCE_GB GB | $SOURCE"
+    exit;
+fi
+
+rsync -avc $SOURCE $DISK
 ```
 
 Save moodledata-backup.sh: Ctrl+X, Enter
@@ -253,7 +264,7 @@ alias moodledata-backup='/var/www/moodledata-backup.sh'
 
 Save .bashrc
 
-Hand run moodledata-backup:
+Manual run moodledata-backup in CLI:
 
 ```bash
 moodledata-backup
